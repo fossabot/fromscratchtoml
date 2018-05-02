@@ -22,6 +22,12 @@ class Statistics(object):
         return cov_matrix
 
     @staticmethod
+    def standard_deviation(X):
+        x_norm = X - X.mean()
+        variance = ch.mm(x_norm.t(), x_norm) / (x_norm.size()[0])
+        return ch.sqrt(variance)
+
+    @staticmethod
     def eigens(X):
         cov_matrix = Statistics.cov_matrix(X, X)
         # since covariance matrix is symmetric we can use linalg.eigh for efficient
@@ -41,3 +47,8 @@ class Statistics(object):
         rescaled_x = ch.mm(X, eigen_vecs[:, :num_components])
 
         return rescaled_x, eigen_vals[:num_components], eigen_vecs[:, :num_components]
+
+    @staticmethod
+    def gaussian_probability(x, mean, sd):
+        probability = (1 / (ch.sqrt(ch.Tensor([2 * np.pi])) * sd)) * ch.exp(ch.pow((x - mean) / sd, 2) / (-2))
+        return probability
